@@ -1,0 +1,240 @@
+\documentclass{article}
+\usepackage[paperwidth=841mm,paperheight=1189mm,margin=0mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{array,booktabs,tabularx,multirow}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning,fit,arrows.meta}
+\usepackage[absolute,overlay]{textpos}
+\usepackage[most]{tcolorbox}
+\usepackage{ifthen}
+\usepackage{calc}
+\usepackage{etoolbox}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\TPHorizModule}{1mm}
+\setlength{\TPVertModule}{1mm}
+\textblockorigin{0mm}{0mm}
+\usepackage{svg}
+
+% Metadata
+\newcommand{\PosterTitle}{Report-based Recommendations for Policy Making and Agency Operations:\\Dataset and LLM Evaluation}
+\newcommand{\PosterAuthors}{Aleksandra Edwards, Thomas Edwards, Jose Camacho-Collados, Alun Preece}
+\newcommand{\PosterAffiliation}{Cardiff University}
+\newcommand{\PosterRightLogo}{assets/logo.png}
+
+% Colours
+\definecolor{PosterHeader}{RGB}{80,81,102}
+\definecolor{PosterBg}{RGB}{231,231,232}
+\definecolor{PosterSectionBg}{RGB}{242,240,236}
+\definecolor{PosterText}{RGB}{35,35,35}
+
+\newcommand{\IfFileExistsInclude}[2][]{%
+  \IfFileExists{#2}{\includegraphics[#1]{#2}}{\fbox{\parbox[c][40mm][c]{0.9\linewidth}{\centering Missing figure\\\texttt{#2}}}}%
+}
+
+\newtcolorbox{postersection}[2][]{
+  enhanced,
+  breakable,
+  colback=PosterSectionBg,
+  colframe=PosterHeader,
+  boxrule=0mm,
+  arc=6mm,
+  outer arc=6mm,
+  left=9mm,right=9mm,top=13mm,bottom=9mm,
+  title=#2,
+  colbacktitle=PosterHeader,
+  coltitle=white,
+  fonttitle=\bfseries\fontsize{38}{42}\selectfont,
+  attach boxed title to top left={yshift=-0.5mm},
+  boxed title style={colback=PosterHeader,colframe=PosterHeader,arc=6mm,outer arc=6mm,boxrule=0mm,left=9mm,right=9mm,top=7mm,bottom=7mm},
+  #1
+}
+\newcommand{\SectionHeading}[1]{{\bfseries\fontsize{29}{33}\selectfont #1}\par\vspace{4mm}}
+\newcommand{\BodyText}{\fontsize{24}{30}\selectfont\color{PosterText}}
+\newcommand{\SmallBody}{\fontsize{21}{27}\selectfont\color{PosterText}}
+\newcommand{\TinyBody}{\fontsize{18}{23}\selectfont\color{PosterText}}
+
+\begin{document}
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[PosterBg] (current page.south west) rectangle (current page.north east);
+  \fill[PosterHeader] ([xshift=8mm,yshift=-8mm]current page.north west) rectangle ([xshift=-8mm,yshift=-88mm]current page.north east);
+  \fill[PosterHeader] ([xshift=8mm,yshift=8mm]current page.south west) rectangle ([xshift=-8mm,yshift=88mm]current page.south east);
+\end{tikzpicture}
+
+% Header
+\begin{textblock*}{735mm}(18mm,20mm)
+  {\color{white}\bfseries\fontsize{44}{48}\selectfont \PosterTitle\par}
+  \vspace{8mm}
+  {\color{white}\fontsize{25}{30}\selectfont \PosterAuthors\\[2mm]\PosterAffiliation\par}
+\end{textblock*}
+
+\begin{textblock*}{80mm}(742mm,20mm)
+  \raggedleft
+  \IfFileExistsInclude[width=56mm]{\PosterRightLogo}
+\end{textblock*}
+
+% LEFT COLUMN
+\begin{textblock*}{410mm}(10mm,104mm)
+\begin{postersection}{Introduction}
+\BodyText
+\SectionHeading{Recommendation generation in policy making}
+Public sector reports such as inspections, reviews, and inquiries often contain lessons that should shape policy and agency practice. Converting those findings into recommendations is not a simple summarisation step: it requires interpretation, judgement, and a clear statement of what should happen next. In practice, this work is time-consuming, variable in quality, and difficult to evaluate consistently.
+
+\vspace{15mm}
+\SectionHeading{Task definition}
+This paper introduces \textbf{report-based recommendation generation}, a new NLG task in which a model receives report evidence as input and produces a recommendation grounded in that evidence. The aim is not to restate findings, but to generate a \textbf{future-facing, actionable, institutionally useful} recommendation that could support policy making and agency operations.
+
+\vspace{6mm}
+\begin{center}
+\includesvg[width=0.735\linewidth]{assets/pipeline.svg}
+\end{center}
+\end{postersection}
+
+\vspace{8mm}
+\begin{postersection}{PubRec-Bench}
+\BodyText
+\SectionHeading{Benchmark overview}
+\textbf{PubRec-Bench} is the first benchmark for report-based recommendation generation in policy and agency contexts. It contains \textbf{110 reports} and \textbf{493 evidence--recommendation pairs} from three public-sector sources across UK and US settings. Each report was reviewed by two annotators, and pairs were retained only when the evidence--recommendation link was clear and defensible.
+
+\vspace{15mm}
+\begin{minipage}[t]{0.50\linewidth}
+\SectionHeading{Example pair}
+\begin{tcolorbox}[colback=white,colframe=PosterHeader!20,arc=3mm,boxrule=0.8pt,left=3mm,right=3mm,top=2mm,bottom=2mm,title=Evidence,fonttitle=\bfseries\fontsize{20}{24}\selectfont]
+\SmallBody
+The social care and wellbeing learning and development team action planning framework was substantial, but it was not possible to evaluate its impact. The family and community support action plan was still in draft form and had not been fully populated.
+\end{tcolorbox}
+
+\vspace{3mm}
+\begin{tcolorbox}[colback=white,colframe=PosterHeader!20,arc=3mm,boxrule=0.8pt,left=3mm,right=3mm,top=2mm,bottom=2mm,title=Recommendation,fonttitle=\bfseries\fontsize{20}{24}\selectfont]
+\SmallBody
+The social work services should ensure that annual reviews of people placed in care homes are carried out by clarifying the appropriate responsibilities and timescales.
+\end{tcolorbox}
+
+\vspace{3mm}
+\SmallBody
+The target output is not a paraphrase of the evidence, but an evidence-grounded proposal for future action.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{30mm}
+\SectionHeading{Dataset}
+\TinyBody
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{\linewidth}{|>{\RaggedRight\arraybackslash}X|>{\Centering\arraybackslash}p{20mm}|>{\Centering\arraybackslash}p{26mm}|>{\Centering\arraybackslash}p{33mm}|}
+\hline
+\rowcolor{white}\bfseries Dataset & \bfseries Reports & \bfseries Recs & \bfseries Avg. tokens / report \\\hline
+UK Care Homes & 22 & 94 & 9,567 \\\hline
+US Children's Bureau & 48 & 122 & 7,943 \\\hline
+NSPCC reports & 40 & 276 & 13,120 \\\hline
+\end{tabularx}
+\end{minipage}
+\end{postersection}
+
+\vspace{8mm}
+\begin{postersection}{Experimental Setup}
+\BodyText
+\begin{minipage}[t]{0.48\linewidth}
+\SectionHeading{Models and prompts}
+\begin{itemize}[leftmargin=9mm,itemsep=3mm,topsep=1mm]
+  \item \textbf{Models:} GPT-4o, Command R+, and LLaMA 3 (8B).
+  \item \textbf{Prompting:} zero-shot and one-shot settings.
+  \item \textbf{Prompt design:} a generic prompt and an expert-designed prompt.
+\end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\SectionHeading{Evaluation}
+\begin{itemize}[leftmargin=9mm,itemsep=3mm,topsep=1mm]
+  \item \textbf{Automatic:} BLEU, ROUGE-L, BERTScore, and LLM-based scoring.
+  \item \textbf{Human study:} 240 recommendations scored by five subject-matter experts.
+  \item \textbf{Criteria:} fluency, coherence, relevance, and actionability.
+\end{itemize}
+\end{minipage}
+\end{postersection}
+\end{textblock*}
+
+% RIGHT COLUMN
+\begin{textblock*}{405mm}(426mm,104mm)
+\begin{postersection}{Results}
+\BodyText
+\SectionHeading{1. Expert-designed prompts improve outputs}
+\begin{center}
+\IfFileExistsInclude[width=0.75\linewidth]{assets/prompt_effect_table3_v2.png}
+\end{center}
+\SmallBody
+Across datasets, the \textbf{expert-designed prompt} outperforms the generic prompt. This suggests that recommendation generation benefits from prompt instructions that encode domain expectations rather than relying on a generic NLG formulation.
+
+\vspace{12mm}
+\SectionHeading{2. Existing overlap metrics miss important qualities}
+\begin{center}
+\IfFileExistsInclude[width=0.98\linewidth]{assets/metric_limits_table4.png}
+\end{center}
+\SmallBody
+BLEU and ROUGE-L remain low, while LLM-based evaluation is much more positive. The gap indicates that simple lexical overlap is a poor fit for recommendations, where multiple valid phrasings and alternative actions may still be appropriate.
+
+\vspace{12mm}
+\SectionHeading{3. Human evaluation is encouraging}
+\begin{center}
+\begin{minipage}[t]{0.80\linewidth}
+  \IfFileExistsInclude[width=\linewidth]{assets/human_eval_table5_v2.png}
+\end{minipage}\hfill
+\end{center}
+
+\vspace{1mm}
+\begin{minipage}[t]{1.0\linewidth}
+\SmallBody
+Scores are mostly above \textbf{2.5 / 3}. Relevance to the evidence is stronger than relevance to the gold recommendation, suggesting that models can provide useful alternative formulations rather than simply reproducing expert wording.
+\end{minipage}
+\vspace{8mm}
+
+\begin{center}
+
+\begin{minipage}[t]{0.9\linewidth}
+  \IfFileExistsInclude[width=\linewidth]{assets/actionability_table6_v2.png}
+\end{minipage}\hfill
+\end{center}
+\vspace{1mm}
+
+\begin{minipage}[t]{1.0\linewidth}
+\SmallBody
+Around \textbf{60\%} of zero-shot outputs were judged actionable. That is important because usefulness in this task depends on whether a recommendation can plausibly support future practice, not just whether it is fluent.
+\end{minipage}
+\end{postersection}
+
+\vspace{8mm}
+\begin{postersection}{Conclusions}
+\BodyText
+\begin{enumerate}[leftmargin=11mm,itemsep=6mm,topsep=2mm,label=\arabic*)]
+
+    \item PubRec-Bench is the first benchmark dataset for recommendation generation aimed at informing policy decisions
+
+    \item Human evaluation shows positive results where experts rated the majority of recommendations as actionable,
+meaning they offer practical, real-world utility.
+\end{enumerate}
+\end{postersection}
+\end{textblock*}
+
+% Footer
+\begin{textblock*}{818mm}(20mm,1079mm)
+  \begin{minipage}[t]{0.62\linewidth}
+    \vspace{50mm}
+    {\color{white}\bfseries\fontsize{33}{38}\selectfont Acknowledgements\par}
+    \vspace{4mm}
+    {\color{white}\fontsize{19}{24}\selectfont Supported by a \emph{UKRI Future Leaders Fellowship. }\par}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.16\linewidth}
+    \raggedleft
+    \vspace{40mm}
+    \IfFileExistsInclude[width=50mm]{assets/qr.png}
+    \hspace{20mm}
+  \end{minipage}\hfill
+
+\end{textblock*}
+
+\end{document}
